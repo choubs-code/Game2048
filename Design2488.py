@@ -8,20 +8,13 @@ BOARD_SIZE = 4
 
 class game2488:
 	def __init__(self):
+		self.score = 0
 		self.matrix = []
 		for _ in range(BOARD_SIZE):
 			self.matrix.append([0] * BOARD_SIZE)
 
-		self.move_dict = {
-			1: self.move_right,
-			2: self.move_left,
-			3: self.move_up,
-			4: self.move_down
-		}
-
-		self.fill_random_two_position()
+		self.fill_random_n_position(positions=2)
 		print("Initial board:")
-		print(self.matrix)
 
 	def get_empty_cell(self):
 		empty_cell_list = []
@@ -32,80 +25,63 @@ class game2488:
 
 		return empty_cell_list
 
-	def fill_random_two_position(self):
-		"""
-		This method will fill random 2 position of our matrix.
-		"""
+	def fill_random_n_position(self, positions=1):
 		empty_cell_list = self.get_empty_cell()
 
-		for _ in range(2):
+		for _ in range(positions):
 			idx = randint(0,len(empty_cell_list) - 1)
 			self.matrix[empty_cell_list[idx][0]][empty_cell_list[idx][1]] = 2
 			del empty_cell_list[idx]
 
 	def play_game(self):
+		print(self.matrix)
 		# Will decide break point here.
 		while True:
 			current_move = randint(0, 3)
 			print("Current Move: {}".format(current_move))
 
-			# Rotate and call move_left
+			# Rotate counter clockwise
 			self.matrix = rot90(self.matrix, current_move)
+			
+			# Make move
 			self.move_left()
-			self.matrix = rot90(self.matrix, -current_move)
+
+			# Rotate clockwise
+			self.matrix = rot90(self.matrix, -1 * current_move)
 
 			# Add new value to board
-			empty_cell_list = self.get_empty_cell()
-			idx = randint(0,len(empty_cell_list) - 1)
-			self.matrix[empty_cell_list[idx][0]][empty_cell_list[idx][1]] = 2
+			self.fill_random_n_position(positions=1)
 
 			print(self.matrix)
+			print("Total score {}".format(self.score))
 			time.sleep(5)
-
-
-	# Move methods
-	def move_right(self):
-		pass
 
 	def move_left(self):
 		current_zero = -1
 		for i in range(4):
-			# Move all int to move_left
+			position_available = 0
+			last_number = 0
 			for j in range(4):
-				if self.matrix[i][j] == 0 and current_zero == -1:
-					current_zero = j
-					continue
-				
-				if self.matrix[i][j] != 0:
-					self.matrix[i][j], self.matrix[i][current_zero] = \
-						self.matrix[i][current_zero], self.matrix[i][j]
-					current_zero += 1
+				if self.matrix[i][j]:
+					if not last_number:
+						last_number = self.matrix[i][j]
+						self.matrix[i][j] = 0
+					else:
+						if self.matrix[i][j] == last_number:
+							self.matrix[i][j] = 0
+							self.matrix[i][position_available] = \
+								2 * last_number
+							self.score += self.matrix[i][position_available]
+							last_number = 0
+							position_available += 1
+						else:
+							self.matrix[i][position_available] = last_number
+							position_available += 1
+							last_number = self.matrix[i][j]
+							self.matrix[i][j] = 0
 
-			# Add equal int
-			for j in range(3):
-				if self.matrix[i][j] == self.matrix[i][j + 1]:
-					self.matrix[i][j] = self.matrix[i][j] + self.matrix[i][j + 1]
-					self.matrix[i][j + 1] = 0
-
-			# Move all int to left
-			current_zero = -1
-			for j in range(4):
-				if self.matrix[i][j] == 0 and current_zero == -1:
-					current_zero = j
-					continue
-				
-				if self.matrix[i][j] != 0:
-					self.matrix[i][j], self.matrix[i][current_zero] = \
-						self.matrix[i][current_zero], self.matrix[i][j]
-					current_zero += 1
-
-	def move_up(self):
-		pass
-
-	def move_down(self):
-		pass
-
-
+			if last_number:
+				self.matrix[i][position_available] = last_number
 
 objGame = game2488()
 objGame.play_game()

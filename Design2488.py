@@ -8,10 +8,10 @@ GAME_MATRIX_SIZE = 4
 
 class game2488:
 	def __init__(self):
-		# Possible moves
+		# Possible moves values.
 		self.possible_moves = [0, 1, 2, 3, 8, 9]
 
-		# Highest cell's value
+		# Highest cell's value.
 		self.highest_cell_value = 0
 
 		# Possible next move during auto-play.
@@ -20,7 +20,7 @@ class game2488:
 		# Number of empty cell present in matrix.
 		self.num_empty_cell_present = 0
 
-		# Score of game.
+		# Score of the game.
 		self.score = 0
 
 		# Game matrix.
@@ -60,7 +60,7 @@ class game2488:
 			return False
 
 		for _ in range(num_cell):
-			# If no. of empty cell is present continue
+			# If no. of empty cell is present then continue
 			if not self.num_empty_cell_present:
 				continue
 
@@ -133,10 +133,10 @@ class game2488:
 			# Rotate counter clockwise
 			self.matrix = rot90(self.matrix, self.possible_next_move)
 			
-			# Make move
+			# Make move to left
 			self.move_each_cols_left()
 
-			# Rotate clockwise
+			# Rotate clockwise to original
 			self.matrix = rot90(self.matrix, -1 * self.possible_next_move)
 
 			# Add new value to board

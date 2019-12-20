@@ -8,5 +8,5 @@ This is command line interfaced 2048 game to play please do following:
 	2: RIGHT
 	3: DOWN
 	9: QUIT
-	8: Autoplay
+	8: Auto-play
 4: Total score is decided as per additions of numbers while playing.

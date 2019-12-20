@@ -8,6 +8,12 @@ GAME_MATRIX_SIZE = 4
 
 class game2488:
 	def __init__(self):
+		# Possible moves
+		self.possible_moves = [0, 1, 2, 3, 8, 9]
+
+		# Highest cell's value
+		self.highest_cell_value = 0
+
 		# Possible next move during auto-play.
 		self.possible_next_move = None
 
@@ -34,6 +40,9 @@ class game2488:
 				if self.matrix[i][j] == 0:
 					self.num_empty_cell_present += 1
 					empty_cell_list.append([i,j])
+
+				if self.highest_cell_value < self.matrix[i][j]:
+					self.highest_cell_value = self.matrix[i][j]
 
 		return empty_cell_list
 
@@ -63,6 +72,7 @@ class game2488:
 
 			self.matrix[empty_cell_list[idx][0]][empty_cell_list[idx][1]] = 2
 			del empty_cell_list[idx]
+			self.num_empty_cell_present -= 1
 
 		return True
 
@@ -109,7 +119,7 @@ class game2488:
 		autoplay_wait_time = 0
 		while True:
 			if not autoplay:
-				self.possible_next_move = input("Please enter next move: ")
+				self.possible_next_move = self.get_input()
 				if self.possible_next_move == 9:
 					break
 				elif self.possible_next_move == 8:
@@ -133,7 +143,11 @@ class game2488:
 			if not self.fill_random_n_position(num_cell=1):
 				print("You played well!!!")
 				print("Final score {}".format(self.score))
+				print("Highest cell value: {}".format(self.highest_cell_value))
 				break
+
+			if self.highest_cell_value == 2048:
+				print("You made it!!!")
 
 			print(self.matrix)
 			print("Total score {}".format(self.score))
@@ -165,7 +179,18 @@ class game2488:
 			if last_number:
 				self.matrix[i][position_available] = last_number
 
-objGame = game2488()
-objGame.play_game()
+	def get_input(self):
+		while True:
+			next_move = input("Please enter next move: "
+							  "[0: Left, 1: Up, 2: Right, 3: Down, 8: Auto-play, 9: Quit]: ")
+			if next_move not in self.possible_moves:
+				continue
+			else:
+				return next_move
+
+
+if __name__ == "__main__":
+	objGame = game2488()
+	objGame.play_game()
 
 

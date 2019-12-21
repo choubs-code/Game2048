@@ -80,7 +80,7 @@ class game2488:
 			else:
 				idx = randint(0, self.num_empty_cell_present - 1)
 
-			self.matrix[empty_cell_list[idx][0]][empty_cell_list[idx][1]] = 2
+			self.matrix[empty_cell_list[idx][0]][empty_cell_list[idx][1]] = choice([2,4])
 			del empty_cell_list[idx]
 			self.num_empty_cell_present -= 1
 

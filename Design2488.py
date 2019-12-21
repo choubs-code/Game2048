@@ -6,10 +6,17 @@ import time
 
 GAME_MATRIX_SIZE = 4
 
+MOVE_LEFT = 0
+MOVE_UP = 1
+MOVE_RIGHT = 2
+MOVE_DOWN = 3
+AUTO_PLAY = 8
+QUIT_GAME = 9
+
 class game2488:
 	def __init__(self):
 		# Possible moves values.
-		self.possible_moves = [0, 1, 2, 3, 8, 9]
+		self.possible_moves = [MOVE_LEFT, MOVE_UP, MOVE_RIGHT, MOVE_DOWN, AUTO_PLAY, QUIT_GAME]
 
 		# Highest cell's value.
 		self.highest_cell_value = 0
@@ -29,10 +36,13 @@ class game2488:
 			self.matrix.append([0] * GAME_MATRIX_SIZE)
 
 		# Start with 2 cell with 2 number in each
-		self.fill_random_n_position(num_cell=2)
+		self.__fill_random_n_position(num_cell=2)
 		print(self.matrix)
 
-	def get_empty_cell(self):
+	def __get_empty_cell(self):
+		"""
+		This function will return list of empty [row, col]
+		"""
 		self.num_empty_cell_present = 0
 		empty_cell_list = []
 		for i in range(GAME_MATRIX_SIZE):
@@ -46,7 +56,7 @@ class game2488:
 
 		return empty_cell_list
 
-	def fill_random_n_position(self, num_cell=1):
+	def __fill_random_n_position(self, num_cell=1):
 		"""
 		Initialize number of cells mentioned in parameter
 		num_cell value can only be 1 or 2
@@ -54,9 +64,9 @@ class game2488:
 		False: Game finished.
 		True: Game not over yet.
 		"""
-		empty_cell_list = self.get_empty_cell()
+		empty_cell_list = self.__get_empty_cell()
 
-		if self.in_end_game_now():
+		if self.__in_end_game_now():
 			return False
 
 		for _ in range(num_cell):
@@ -76,7 +86,7 @@ class game2488:
 
 		return True
 
-	def in_end_game_now(self):
+	def __in_end_game_now(self):
 		"""
 		Check for game status. Game can be continued in following cases:
 			1. Matrix have empty cell(s).
@@ -119,7 +129,7 @@ class game2488:
 		autoplay_wait_time = 0
 		while True:
 			if not autoplay:
-				self.possible_next_move = self.get_input()
+				self.possible_next_move = self.__get_input()
 				if self.possible_next_move == 9:
 					break
 				elif self.possible_next_move == 8:
@@ -134,13 +144,13 @@ class game2488:
 			self.matrix = rot90(self.matrix, self.possible_next_move)
 			
 			# Make move to left
-			self.move_each_cols_left()
+			self.__move_each_cols_left()
 
 			# Rotate clockwise to original
 			self.matrix = rot90(self.matrix, -1 * self.possible_next_move)
 
 			# Add new value to board
-			if not self.fill_random_n_position(num_cell=1):
+			if not self.__fill_random_n_position(num_cell=1):
 				print("You played well!!!")
 				print("Final score {}".format(self.score))
 				print("Highest cell value: {}".format(self.highest_cell_value))
@@ -153,7 +163,10 @@ class game2488:
 			print("Total score {}".format(self.score))
 			time.sleep(autoplay_wait_time)
 
-	def move_each_cols_left(self):
+	def __move_each_cols_left(self):
+		"""
+		Method to move all item to left as per game rule.
+		"""
 		for i in range(GAME_MATRIX_SIZE):
 			position_available = 0
 			last_number = 0
@@ -179,7 +192,7 @@ class game2488:
 			if last_number:
 				self.matrix[i][position_available] = last_number
 
-	def get_input(self):
+	def __get_input(self):
 		while True:
 			next_move = input("Please enter next move: "
 							  "[0: Left, 1: Up, 2: Right, 3: Down, 8: Auto-play, 9: Quit]: ")
